@@ -1,4 +1,8 @@
 const knex = require('./db')
+const jsonist = require('jsonist');
+const { Student } = require('./student.js');
+const { GradeManager } = require('./gradeManager.js');
+require('./worker.js')
 
 module.exports = {
   getHealth,
@@ -18,13 +22,55 @@ async function getHealth (req, res, next) {
 }
 
 async function getStudent (req, res, next) {
-  throw new Error('This method has not been implemented yet.')
+  try {
+    const student = new Student(req.params.id)
+    const studentData = await student.toJson()
+    if (!studentData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Student not found'
+      })
+    }
+    res.status(200).json({
+      success: true,
+      data: studentData
+    })
+  } catch (error) {
+    next(error)
+  }
 }
 
 async function getStudentGradesReport (req, res, next) {
-  throw new Error('This method has not been implemented yet.')
+  try {
+    const student = new Student(req.params.id)
+    const studentData = await student.toJson()
+    if (!studentData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Student not found'
+      })
+    }
+    const grandManager = new GradeManager
+    const filteredGrades = grandManager.getGradeStudent(req.params.id)
+    const report = {
+      success: true,
+      data: {
+        student: studentData,
+        grades: filteredGrades
+      }
+    }
+    res.status(200).json(report)
+  } catch (error) {
+    next(error)
+  }
 }
 
 async function getCourseGradesReport (req, res, next) {
-  throw new Error('This method has not been implemented yet.')
+  try {
+    const grandManager = new GradeManager
+    const courseStats = grandManager.getCourseStats()
+    res.status(200).json({ success: true, data: courseStats })
+  } catch (error) {
+    next(error)
+  }
 }
