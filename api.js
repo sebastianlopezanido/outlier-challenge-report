@@ -1,7 +1,6 @@
 const knex = require('./db')
-const jsonist = require('jsonist');
-const { Student } = require('./student.js');
-const { GradeManager } = require('./gradeManager.js');
+const { Student } = require('./student.js')
+const { GradeManager } = require('./gradeManager.js')
 require('./worker.js')
 
 module.exports = {
@@ -50,7 +49,7 @@ async function getStudentGradesReport (req, res, next) {
         message: 'Student not found'
       })
     }
-    const grandManager = new GradeManager
+    const grandManager = new GradeManager()
     const filteredGrades = grandManager.getGradeStudent(req.params.id)
     const report = {
       success: true,
@@ -67,7 +66,7 @@ async function getStudentGradesReport (req, res, next) {
 
 async function getCourseGradesReport (req, res, next) {
   try {
-    const grandManager = new GradeManager
+    const grandManager = new GradeManager()
     const courseStats = grandManager.getCourseStats()
     res.status(200).json({ success: true, data: courseStats })
   } catch (error) {
